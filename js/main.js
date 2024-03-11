@@ -26,11 +26,18 @@ searchInputEl.addEventListener('focus', function () {
 
   // 스크롤 시 전역 배지(고정 배너) 숨기기
   const badgeEl = document.querySelector('header .badges');
+  // 페이지 최상단으로 이동
+  const toTopEl = document.querySelector('#to-top');
+  toTopEl.addEventListener('click', function () {
+    gsap.to(window, 0.6, {
+      scrollTo: 0 // 페이지의 0px 지점(최상단)으로 이동, ScrollToPlugin을 연결해야 사용 가능한 옵션
+    });
+  })
 
   // 페이지에 스크롤 이벤트 감지를 추가!
   // window: 브라우저 창 객체
   window.addEventListener('scroll', function (){
-    console.log(window.scrollY); // (y축으로 얼마나 스크롤 했는지) 페이지 스크롤 위치
+    // console.log(window.scrollY); // (y축으로 얼마나 스크롤 했는지) 페이지 스크롤 위치
     
     //Quiz:
     //페이지 스크롤 위치가 500px을 넘으면 배지 요소를 숨기고,
@@ -46,6 +53,12 @@ searchInputEl.addEventListener('focus', function () {
       opacity: 0,
       display: 'none'
     });
+
+    // 상단으로 이동 버튼 보이기!
+    gsap.to(toTopEl, 0.6, {
+      opacity: 1,
+      x: 0 // x축 0px 지점으로 이동
+    });
   } else {
     // badgeEl.style.display = 'block';
     // badgeEl.style.opacity = 1;
@@ -54,6 +67,12 @@ searchInputEl.addEventListener('focus', function () {
     gsap.to(badgeEl, 0.6, {
       opacity: 1,
       display: 'block'
+    });
+
+    //상단으로 이동 버튼 숨기기!
+    gsap.to(toTopEl, 0.6, {
+      opacity: 0,
+      x: 100 // x축 100px 지점으로 이동
     });
   }
 });
@@ -148,3 +167,36 @@ gsap.to('.floating3', 1.2, {
   yoyo: true,
   ease: Power1.easeInOut
 })
+
+// ScrollMagic 사용
+// 그 외 scrollreveal
+const spyEls = document.querySelectorAll('section.scroll-spy');
+spyEls.forEach(function (spyEl) {
+  new ScrollMagic.Scene({ //감시할 장면(Scene) 추가 및 옵션 지정
+  triggerElement: spyEl, // 보여짐 여부를 감시할 요소를 지정
+  triggerHook: 0.8 // 화면의 80% 지점에서 보여짐 여부 감시 (0~1사이 지정)
+  })
+  .setClassToggle(spyEl,'show') // 요소가 화면에 보이면 show 클래스 추가
+  .addTo(new ScrollMagic.Controller()); //컨트롤러에 장면을 할당(필수!)
+  // 라이브러리에서 지정한 문법으로 깊게 이해x
+});
+
+//프로모션 수평슬라이드 기능
+new Swiper('.awards .swiper', {
+  // Optional parameters
+  direction: 'horizontal', // 수평 슬라이드
+  loop: true, // 반복 재생 여부, 1 -> 2 -> 3 -> 4 -> 다시 1
+  autoplay: true, // 자동 재생 여부
+  slidesPerView: 5, // 한 번에 보여줄 슬라이드 개수(기본값: 1)
+  spaceBetween: 30, // 슬라이드 사이 여백(간격) px
+  navigation: { // 슬라이드 이전/다음 버튼 사용
+    nextEl: '.awards .swiper-button-next',
+    prevEl: '.awards .swiper-button-prev',
+  },
+});
+
+// 현재 연도 표시
+// 날짜 정보를 가진 JS Date 객체를 활용(JS 기본 제공 객체: 여러 데이터들의 묶음)
+const thisYear = document.querySelector('.this-year');
+thisYear.textContent = new Date().getFullYear(); // 현재 연도의 정보가 숫자 데이터로 반환됨
+console.log(new Date().getFullYear);
