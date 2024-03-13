@@ -15,6 +15,7 @@ body {
   overflow-x: hidden;
 }
 
+/* a태그 기본속성 underline */
 a {
   text-decoration: none;
 }
